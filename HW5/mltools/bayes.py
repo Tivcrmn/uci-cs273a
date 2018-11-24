@@ -23,7 +23,7 @@ class gaussClassify(classifier):
     """Bayes Classifier with Gaussian class-conditional probabilities.  """
 
     def __init__(self, X=None, Y=None, equal=0, diagonal=0, wts=None, reg=0):
-        """Constructor for a Gaussian Bayes Classifier. 
+        """Constructor for a Gaussian Bayes Classifier.
 
         Args:
           X (array): M,N array of M data points with N features each
@@ -50,17 +50,17 @@ class gaussClassify(classifier):
 
     def __repr__(self):
         to_print = 'Gaussian classifier, {} classes:\n{}\nMeans:\n{}\nCovariances:\n{}\n'.format(
-            len(self.classes), self.classes, 
-            str([str(np.asmatrix(m).shape[0]) + ' x ' + str(np.asmatrix(m).shape[1]) for m in self.means]), 
-            str([str(np.asmatrix(c).shape[0]) + ' x ' + str(np.asmatrix(c).shape[1]) for c in self.covars])) 
+            len(self.classes), self.classes,
+            str([str(np.asmatrix(m).shape[0]) + ' x ' + str(np.asmatrix(m).shape[1]) for m in self.means]),
+            str([str(np.asmatrix(c).shape[0]) + ' x ' + str(np.asmatrix(c).shape[1]) for c in self.covars]))
         return to_print
 
-    
+
     def __str__(self):
         to_print = 'Gaussian classifier, {} classes:\n{}\nMeans:\n{}\nCovariances:\n{}\n'.format(
-            len(self.classes), self.classes, 
-            str([str(np.asmatrix(m).shape[0]) + ' x ' + str(np.asmatrix(m).shape[1]) for m in self.means]), 
-            str([str(np.asmatrix(c).shape[0]) + ' x ' + str(np.asmatrix(c).shape[1]) for c in self.covars])) 
+            len(self.classes), self.classes,
+            str([str(np.asmatrix(m).shape[0]) + ' x ' + str(np.asmatrix(m).shape[1]) for m in self.means]),
+            str([str(np.asmatrix(c).shape[0]) + ' x ' + str(np.asmatrix(c).shape[1]) for c in self.covars]))
         return to_print
 
 
@@ -70,7 +70,7 @@ class gaussClassify(classifier):
     def train(self, X, Y, equal=0, diagonal=0, wts=None, reg=0):
         """Train the model on data (X,Y).
 
-        This method trains a Bayes classifier with class models. Refer to 
+        This method trains a Bayes classifier with class models. Refer to
         the constructor doc string for descriptions of X and Y.
         """
         M,N = X.shape
@@ -84,7 +84,7 @@ class gaussClassify(classifier):
         self.covars = [np.zeros((N,N)) for c in self.classes]
 
         for i,c in enumerate(self.classes):
-            indexes = np.where(Y == c)[0] 
+            indexes = np.where(Y == c)[0]
             self.probs[i] = np.sum(wts[indexes])                # compute the (weighted) fraction of data in class i
 
             wtsi = wts[indexes] / self.probs[i]                 # compute relative weights of data in this class
@@ -138,7 +138,7 @@ class gaussClassify(classifier):
         # need inverse covariance and normalizing constant for Gaussian
         if len(covar.shape) > 1:         # use matrix inverse,
           constant = 1 / (2 * math.pi)**(d / 2) / np.linalg.det(covar)**(0.5)
-          inverse = np.linalg.inv(covar) 
+          inverse = np.linalg.inv(covar)
           p = np.exp(-0.5 * np.sum(np.dot(R, inverse) * R, axis=1)) * constant
         else:                            # or simple inverse for diagonal matrices
           constant = 1 / (2 * math.pi)**(d / 2) / np.prod(covar)**(0.5)
@@ -146,5 +146,3 @@ class gaussClassify(classifier):
           p = np.exp(-0.5 * np.sum((R*inverse) * R, axis=1)) * constant
         # (vectorized)
         return p
-            
-        

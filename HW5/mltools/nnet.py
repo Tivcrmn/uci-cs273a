@@ -21,10 +21,10 @@ class nnetClassify(classifier):
 
     Attributes:
       classes: list of class (target) identifiers for the classifier
-      layers : list of layer sizes [N,S1,S2,...,C], where N = # of input features, S1 = # of hidden nodes 
+      layers : list of layer sizes [N,S1,S2,...,C], where N = # of input features, S1 = # of hidden nodes
                in layer 1, ... , and C = the number of classes, or 1 for a binary classifier
       weights: list of numpy arrays containing each layer's weights, size e.g. (S1,N), (S2,S1), etc.
-  
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -107,7 +107,7 @@ class nnetClassify(classifier):
 
         Z = Z.dot( self.wts[L - 1].T )      # compute output layer linear response
         Z = self.Sig0(Z)                         # apply output layer activation function
-        if Z.shape[1]==1: Z = np.hstack( (2.0*self.Sig0(0.0)-Z,Z) )  # if binary classifier, make Mx2 
+        if Z.shape[1]==1: Z = np.hstack( (2.0*self.Sig0(0.0)-Z,Z) )  # if binary classifier, make Mx2
         return Z
 
 
@@ -117,21 +117,21 @@ class nnetClassify(classifier):
         Args:
           X : MxN numpy array containing M data points with N features each
           Y : Mx1 numpy array of targets (class labels) for each data point in X
-          sizes : [Nin, Nh1, ... , Nout] 
-              Nin is the number of features, Nout is the number of outputs, 
+          sizes : [Nin, Nh1, ... , Nout]
+              Nin is the number of features, Nout is the number of outputs,
               which is the number of classes. Member weights are {W1, ... , WL-1},
               where W1 is Nh1 x Nin, etc.
-          init : str 
+          init : str
               'none', 'zeros', or 'random'.  inits the neural net weights.
           stepsize : scalar
               The stepsize for gradient descent (decreases as 1 / iter).
-          stopTol : scalar 
+          stopTol : scalar
               Tolerance for stopping criterion.
-          stopIter : int 
-              The maximum number of steps before stopping. 
-          activation : str 
+          stopIter : int
+              The maximum number of steps before stopping.
+          activation : str
               'logistic', 'htangent', or 'custom'. Sets the activation functions.
-        
+
         """
         if self.wts[0].shape[1] - 1 != len(X[0]):
             raise ValueError('layer[0] must equal the number of columns of X (number of features)')
@@ -156,7 +156,7 @@ class nnetClassify(classifier):
 
         while not done:
             step_i = float(stepsize) / it           # step size evolution; classic 1/t decrease
-            
+
             # stochastic gradient update (one pass)
             for j in range(M):
                 A,Z = self.__responses(twod(X[j,:]))  # compute all layers' responses, then backdrop
@@ -185,11 +185,11 @@ class nnetClassify(classifier):
     def err_k(self, X, Y):
         """Compute misclassification error rate. Assumes Y in 1-of-k form.  """
         return self.err(X, from1ofK(Y,self.classes).ravel())
-        
-        
+
+
     def mse(self, X, Y):
         """Compute mean squared error of predictor 'obj' on test data (X,Y).  """
-        return mse_k(X, to1ofK(Y))
+        return self.mse_k(X, to1ofK(Y))
 
 
     def mse_k(self, X, Y):
@@ -201,9 +201,9 @@ class nnetClassify(classifier):
 
 
     def setActivation(self, method, sig=None, d_sig=None, sig_0=None, d_sig_0=None):
-    # def setActivation(self, method, sig=None, sig0=None): 
+    # def setActivation(self, method, sig=None, sig0=None):
         """
-        This method sets the activation functions. 
+        This method sets the activation functions.
 
         Parameters
         ----------
@@ -302,10 +302,10 @@ class nnetRegress(regressor):
     """A simple neural network regressor
 
     Attributes:
-      layers (list): layer sizes [N,S1,S2,...,C], where N = # of input features, 
-                     S1 = # of hidden nodes in layer 1, ... , and C = the number of 
+      layers (list): layer sizes [N,S1,S2,...,C], where N = # of input features,
+                     S1 = # of hidden nodes in layer 1, ... , and C = the number of
                      classes, or 1 for a binary classifier
-      weights (list): list of numpy arrays containing each layer's weights, sizes 
+      weights (list): list of numpy arrays containing each layer's weights, sizes
                      (S1,N), (S2,S1), etc.
     """
 
@@ -318,7 +318,7 @@ class nnetRegress(regressor):
           wts     : list of coefficients (weights) for each layer of the NN
           activation : function for layer activation function & derivative
         """
-        self.wts = [] 
+        self.wts = []
         #self.set_activation(activation.lower())
         #self.init_weights(sizes, init.lower(), X, Y)
         self.Sig = lambda Z: np.tanh(Z)       ## TODO: make flexible
@@ -347,7 +347,7 @@ class nnetRegress(regressor):
     @property
     def layers(self):
         """Return list of layer sizes, [N,H1,H2,...,C]
- 
+
         N = # of input features
         Hi = # of hidden nodes in layer i
         C = # of output nodes (usually 1)
@@ -390,14 +390,14 @@ class nnetRegress(regressor):
         Args:
           X : MxN numpy array containing M data points with N features each
           Y : Mx1 numpy array of targets for each data point in X
-          sizes (list of int): [Nin, Nh1, ... , Nout] 
-              Nin is the number of features, Nout is the number of outputs, 
+          sizes (list of int): [Nin, Nh1, ... , Nout]
+              Nin is the number of features, Nout is the number of outputs,
               which is the number of target dimensions (usually 1). Weights are {W1, ... , WL-1},
               where W1 is Nh1 x Nin, etc.
           init (str): 'none', 'zeros', or 'random'.  inits the neural net weights.
           stepsize (float): The stepsize for gradient descent (decreases as 1 / iter).
           stopTol (float): Tolerance for stopping criterion.
-          stopIter (int): The maximum number of steps before stopping. 
+          stopIter (int): The maximum number of steps before stopping.
           activation (str): 'logistic', 'htangent', or 'custom'. Sets the activation functions.
         """
         if self.wts[0].shape[1] - 1 != len(X[0]):
@@ -419,7 +419,7 @@ class nnetRegress(regressor):
 
         while not done:
             step_i = (2.0*stepsize) / (2.0+it)      # step size evolution; classic 1/t decrease
-            
+
             # stochastic gradient update (one pass)
             for j in range(M):
                 A,Z = self.__responses(twod(X[j,:]))  # compute all layers' responses, then backdrop
@@ -448,8 +448,8 @@ class nnetRegress(regressor):
 
 
     #def set_activation(self, method, sig=None, d_sig=None, sig_0=None, d_sig_0=None):
-    def setActivation(self, method, sig=None, sig0=None): 
-        """ This method sets the activation functions. 
+    def setActivation(self, method, sig=None, sig0=None):
+        """ This method sets the activation functions.
 
         Args:
           method : string, {'logistic' , 'htangent', 'custom'} -- which activation type

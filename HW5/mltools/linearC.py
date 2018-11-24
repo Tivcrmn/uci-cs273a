@@ -18,7 +18,7 @@ class linearClassify(classifier):
 
     Attributes:
         classes : a list of the possible class labels
-        theta   : linear parameters of the classifier 
+        theta   : linear parameters of the classifier
                   (1xN or CxN numpy array, where N=# features, C=# classes)
 
     Note: currently specialized to logistic loss
@@ -26,13 +26,13 @@ class linearClassify(classifier):
 
     def __init__(self, *args, **kwargs):
         """
-        Constructor for linearClassify object.  
+        Constructor for linearClassify object.
 
         Parameters: Same as "train" function; calls "train" if available
 
         Properties:
            classes : list of identifiers for each class
-           theta   : linear coefficients of the classifier; numpy array 
+           theta   : linear coefficients of the classifier; numpy array
                       shape (1,N) for binary classification or (C,N) for C classes
         """
         self.classes = []
@@ -63,7 +63,7 @@ class linearClassify(classifier):
 
 ## CORE METHODS ################################################################
 
-    ### TODO: plot2D member function?  And/or "update line" & redraw? 
+    ### TODO: plot2D member function?  And/or "update line" & redraw?
     ###   ALT: write f'n to take linear classifier & plot it
     ###   pass into gradient descent f'n as "updateFn" ?
 
@@ -74,8 +74,8 @@ class linearClassify(classifier):
 
         Parameters
         ----------
-        X : M x N numpy array 
-            M = number of testing instances; N = number of features.  
+        X : M x N numpy array
+            M = number of testing instances; N = number of features.
         """
         theta,X = twod(self.theta), arr(X)          # convert to numpy if needed
         resp = theta[:,0].T + X.dot(theta[:,1:].T)  # linear response (MxC)
@@ -94,7 +94,7 @@ class linearClassify(classifier):
 
     def train(self, X, Y, reg=0.0, initStep=1.0, stopTol=1e-4, stopIter=5000, plot=None):
         """
-        Train the linear classifier.  
+        Train the linear classifier.
         """
         self.theta,X,Y = twod(self.theta), arr(X), arr(Y)   # convert to numpy arrays
         M,N = X.shape
@@ -117,7 +117,7 @@ class linearClassify(classifier):
 
             for i in range(M):  # for each data point
                 # compute linear response:
-                respi = self.theta[:,0] + twod(X[i,:]).dot(self.theta[:,1:].T) 
+                respi = self.theta[:,0] + twod(X[i,:]).dot(self.theta[:,1:].T)
                 yhati = 1.0 if respi > 0 else 0.0   # convert to 0/1 prediction
                 sigx  = np.exp(respi) / (1.0+np.exp(respi))
                 gradi = -Y01[i]*(1-sigx)*twod(X1[i,:]) + (1-Y01[i])*sigx*twod(X1[i,:]) + reg*self.theta
@@ -141,17 +141,17 @@ class linearClassify(classifier):
         M,N = X.shape
         P = self.predictSoft(X)
         J = - np.sum( np.log( P[range(M),Y[:]] ) )   # assumes Y=0...C-1
-        Y = ml.to1ofK(Y,self.classes)
+        Y = to1ofK(Y,self.classes)
         DJ= NotImplemented ##- np.sum( P**Y
         return J,DJ
-        
 
-#    def TODOtrain(self, X, Y, reg=0.0, 
-#                    initStep=1.0, stopTol=1e-4, stopIter=5000, 
+
+#    def TODOtrain(self, X, Y, reg=0.0,
+#                    initStep=1.0, stopTol=1e-4, stopIter=5000,
 #                    loss=None,batchsize=1,
 #                    plot=None):
 #        """
-#        Train the linear classifier.  
+#        Train the linear classifier.
 #        """
 #        self.theta,X,Y = twod(self.theta), arr(X), arr(Y)   # convert to numpy arrays
 #        M,N = X.shape

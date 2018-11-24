@@ -44,7 +44,7 @@ def rescale(X, args=None):
 
 def whiten(X, args=None):
     """
-    Function that whitens X to be zero mean, uncorrelated, and unit variance. 
+    Function that whitens X to be zero mean, uncorrelated, and unit variance.
     Ex:  Xtr,args = whiten(Xtr)        # whiten training data
          Xte,_    = whiten(Xte, args)  # whiten test data to match training
 
@@ -86,7 +86,7 @@ def whiten(X, args=None):
 def fhash(X, K, hash=None):
     """
     Random hash of features from data. Selects a fixed or random hash of features
-    from X. 
+    from X.
 
     Parameters
     ----------
@@ -124,7 +124,7 @@ def fhash(X, K, hash=None):
 def fkitchensink(X, K, typ, W=None):
     """
     Random kitchen sink features from data. Selects K random "kitchen sink"
-    features of X. 
+    features of X.
 
     Parameters
     ----------
@@ -161,12 +161,12 @@ def fkitchensink(X, K, typ, W=None):
             W[1,:] = np.random.randn(K) * s[W[0,:]]     # random threshold (w/ same variance as that feature)
         elif typ in ['sigmoid', 'sinusoid', 'linear']:
             # random direction for sigmodal ridge, random freq for sinusoids, random linear projections
-            W = np.random.randn(M,K)                    
+            W = np.random.randn(M,K)
 
         to_return = (W,)
-                                                        
+
     Z = np.zeros((N,K))
-    
+
     if typ == 'stump':                                  # decision stump w/ random threshold
         for i in range(K):
             Z[:,i] = X[:,W[0,i]] >= W[1,i]
@@ -223,7 +223,7 @@ def flda(X, Y, K, T=None):
 
     S = (nc / n).dot(np.reshape(sig, (len(c),n * n)))
     S = np.reshape(S, (n,n))
-    
+
     U,S,V = np.linalg.svd(X, K)                 # compute SVD (Ihler uses svds here)
     Xlda = U.dot(np.sqrt(S))                    # new data coefficients
     T = np.sqrt(S[0:K,0:K]).dot(twod(V).T)      # new bases for data
@@ -392,7 +392,7 @@ def fproject(X, K, proj=None):
     X : numpy array
         M x K array of projecjtion of data in X.
     proj : numpy array (optional)
-        N x K numpy array that is the project matrix. Only returned if proj 
+        N x K numpy array that is the project matrix. Only returned if proj
         argument isn't provided.
     """
     n,m = twod(X).shape
@@ -403,7 +403,7 @@ def fproject(X, K, proj=None):
         to_return = (proj,)
 
     X2 = X.dot(proj)
-    
+
     return X2 if len(to_return) == 0 else (X2,) + to_return
 
 
@@ -443,8 +443,8 @@ def fsubset(X, K, feat=None):
 
 def fsvd(X, K, T=None):
     """
-    Reduce the dimensionality of X to K features using singular value 
-    decomposition. 
+    Reduce the dimensionality of X to K features using singular value
+    decomposition.
 
     Parameters
     ----------
@@ -481,7 +481,7 @@ def fsvd(X, K, T=None):
 
 def imputeMissing(X, method, parameters=None):
     """ Impute missing features of X (NaNs) in one of several simple ways
-    imputeMissing(X, method, parameters) 
+    imputeMissing(X, method, parameters)
     Missing values are denoted by NaN
     methods are:
       'constant' : fill with a constant value
@@ -500,10 +500,10 @@ def imputeMissing(X, method, parameters=None):
     method = method.lower()
 
     def nanEval(X, lam):
-       e = np.zeros( (X.shape[1],) )
-       for i in range(X.shape[1]):
-         e[i] = lam(X[ ~np.isnan(X[:,i]),i ])
-       return e
+        e = np.zeros( (X.shape[1],) )
+        for i in range(X.shape[1]):
+            e[i] = lam(X[ ~np.isnan(X[:,i]),i ])
+        return e
 
     # First, create imputation parameters if not provided:
     if parameters is None:
@@ -541,7 +541,7 @@ def imputeMissing(X, method, parameters=None):
             nans = np.argwhere(np.isnan(X[j,:])).flatten()
             oks  = np.argwhere(~np.isnan(X[j,:])).flatten()
             X[j,nans] = mu[nans] - Sig[np.ix_(nans,oks)].dot( np.linalg.inv(Sig[np.ix_(oks,oks)]).dot( (X[j,oks]-mu[oks]).T ) ).T
-    
+
     return X
 
 

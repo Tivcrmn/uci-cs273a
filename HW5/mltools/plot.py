@@ -12,7 +12,7 @@ from numpy import atleast_2d as twod
 def plotClassify2D(learner, X, Y, pre=lambda x: x, axis=None, nGrid=128, **kwargs):
     """
     Plot data and classifier outputs on two-dimensional data.
-    This function plot data (X,Y) and learner.predict(X, Y) 
+    This function plot data (X,Y) and learner.predict(X, Y)
     together. The learner is is predicted on a dense grid
     covering data X, to show its decision boundary.
 
@@ -38,7 +38,7 @@ def plotClassify2D(learner, X, Y, pre=lambda x: x, axis=None, nGrid=128, **kwarg
 
     # TODO: Clean up code
 
-    if axis == None: axis = plt 
+    if axis == None: axis = plt
     hld = axis.ishold();
     axis.hold(True);
     axis.plot( X[:,0],X[:,1], 'k.', visible=False )
@@ -55,12 +55,12 @@ def plotClassify2D(learner, X, Y, pre=lambda x: x, axis=None, nGrid=128, **kwarg
         axis.imshow( YGrid.reshape( (len(xticks),len(yticks)) ), extent=ax, interpolation='nearest',origin='lower',alpha=0.5, aspect='auto' )
     cmap = plt.cm.get_cmap()
     # TODO: if Soft: predictSoft; get colors for each class from cmap; blend pred with colors & show
-    #  
+    #
     try: classes = np.array(learner.classes);
     except Exception: classes = np.unique(Y)
     cvals = (classes - min(classes))/(max(classes)-min(classes)+1e-100)
-    for i,c in enumerate(classes): 
-        axis.plot( X[Y==c,0],X[Y==c,1], 'ko', color=cmap(cvals[i]), **kwargs )  
+    for i,c in enumerate(classes):
+        axis.plot( X[Y==c,0],X[Y==c,1], 'ko', color=cmap(cvals[i]), **kwargs )
     axis.axis(ax); axis.hold(hld)
 
 
@@ -74,7 +74,7 @@ def histy(X,Y,axis=None,**kwargs):
     Related but slightly different appearance to e.g.
       matplotlib.hist( [X[Y==c] for c in np.unique(Y)] , histtype='barstacked' )
     """
-    if axis == None: axis = plt 
+    if axis == None: axis = plt
     yvals = np.unique(Y)
     nil, bin_edges = np.histogram(X, **kwargs)
     C,H = len(yvals),len(nil)
@@ -106,8 +106,8 @@ def plotPairs(X,Y=None,**kwargs):
             if i == j:
                 histy(X[:,i],Y,axis=ax[j,i])
             else:
-                plot_classify_2D(None,X[:,[i,j]],Y,axis=ax[j,i])
-            
+                plotClassify2D(None,X[:,[i,j]],Y,axis=ax[j,i])
+
 
 def plotGauss2D(mu,cov,*args,**kwargs):
     """

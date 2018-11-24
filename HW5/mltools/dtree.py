@@ -34,14 +34,14 @@ class treeBase(object):
         self.L = arr([])           # indices of left children
         self.R = arr([])           # indices of right children
         self.F = arr([])           # feature to split on (-1 = leaf = predict)
-        self.T = arr([])           # threshold to split on 
+        self.T = arr([])           # threshold to split on
         self.P = arr([])           # prediction value for node
         self.sz = 0                 # size; also next node during construction
-   
+
         if len(args) or len(kwargs):     # if we were given optional arguments,
             self.train(*args, **kwargs)    #  just pass them through to "train"
- 
-    
+
+
     def __repr__(self):
         to_return = 'Decision Tree\n'
         if len(self.T) > 8:
@@ -76,9 +76,9 @@ class treeBase(object):
         Args:
           X (arr) : M,N numpy array of M data points with N features each
           Y (arr) : M, or M,1 array of target values for each data point
-          minParent (int): Minimum number of data required to split a node. 
+          minParent (int): Minimum number of data required to split a node.
           minLeaf   (int): Minimum number of data required to form a node
-          maxDepth  (int): Maximum depth of the decision tree. 
+          maxDepth  (int): Maximum depth of the decision tree.
           nFeatures (int): Number of available features for splitting at each node.
         """
         n,d = mat(X).shape
@@ -88,13 +88,13 @@ class treeBase(object):
         self.L, self.R, self.F, self.T = np.zeros((sz,),dtype=int), np.zeros((sz,),dtype=int), np.zeros((sz,),dtype=int), np.zeros((sz,))
         sh = list(Y.shape)
         sh[0] = sz
-        self.P = np.zeros(sh,dtype=Y.dtype) #np.zeros((sz,1))  # shape like Y 
+        self.P = np.zeros(sh,dtype=Y.dtype) #np.zeros((sz,1))  # shape like Y
         self.sz = 0              # start building at the root
 
         self.__train_recursive(X, Y, 0, minParent, maxDepth, minLeaf, nFeatures)
 
         self.L = self.L[0:self.sz]                              # store returned data into object
-        self.R = self.R[0:self.sz]                              
+        self.R = self.R[0:self.sz]
         self.F = self.F[0:self.sz]
         self.T = self.T[0:self.sz]
         self.P = self.P[0:self.sz]
@@ -113,7 +113,7 @@ class treeBase(object):
         return self.__predict_recursive(X, 0)
 
 
-    
+
 ## HELPERS #####################################################################
 
 
@@ -161,11 +161,11 @@ class treeBase(object):
         self.sz += 1          # advance to next node to build subtree
 
         # recur left
-        self.L[my_idx] = self.sz    
+        self.L[my_idx] = self.sz
         self.__train_recursive(X[go_left,:], Y[go_left], depth+1, minParent, maxDepth, minLeaf, nFeatures)
 
         # recur right
-        self.R[my_idx] = self.sz    
+        self.R[my_idx] = self.sz
         self.__train_recursive(X[go_right,:], Y[go_right], depth+1, minParent, maxDepth, minLeaf, nFeatures)
 
         return
@@ -222,8 +222,8 @@ class treeRegress(treeBase,regressor):
         count_pa[-1] = 1.0
         if len(y_cum_to.shape)>1:
             count_to, count_pa = count_to.reshape(-1,1), count_pa.reshape(-1,1)
-        mean_to = y_cum_to / count_to; 
-        mean_pa = y_cum_pa / count_pa; 
+        mean_to = y_cum_to / count_to;
+        mean_pa = y_cum_pa / count_pa;
 
         # compute variance up to, and past position j (for j = 0..n)
         y2_cum_to = np.cumsum(np.power(tsorted, 2), axis=0)
@@ -244,12 +244,12 @@ class treeRegress(treeBase,regressor):
         return (val,idx)
 
     def __init__(self, *args,**kwargs):
-      """Decision tree for regression
+        """Decision tree for regression
 
-      See train for arguments
-      """
-      treeBase.__init__(self,*args,**kwargs)
- 
+        See train for arguments
+        """
+        treeBase.__init__(self,*args,**kwargs)
+
     train = treeBase.train
     predict = treeBase.predict
 
@@ -275,9 +275,9 @@ class treeClassify(treeBase,classifier):
         ----------
         X : M x N numpy array of M data points with N features each
         Y : numpy array of shape (M,) that contains the target values for each data point
-        minParent : (int)   Minimum number of data required to split a node. 
+        minParent : (int)   Minimum number of data required to split a node.
         minLeaf   : (int)   Minimum number of data required to form a node
-        maxDepth  : (int)   Maximum depth of the decision tree. 
+        maxDepth  : (int)   Maximum depth of the decision tree.
         nFeatures : (int)   Number of available features for splitting at each node.
         """
         self.classes = list(np.unique(Y)) if len(self.classes) == 0 else self.classes
